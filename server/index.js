@@ -81,6 +81,17 @@ async function initDatabase() {
   }
 }
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  console.log('🏥 Health check called');
+  res.json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    railway: process.env.RAILWAY_PROJECT_ID ? 'yes' : 'no'
+  });
+});
+
 // API для портфолио
 app.get('/api/portfolio', async (req, res) => {
   try {
@@ -172,17 +183,9 @@ app.get('/api/testimonials', async (req, res) => {
   }
 });
 
-// Обработка несуществующих маршрутов
-app.use((req, res) => {
-  res.status(404).json({ error: `Маршрут ${req.method} ${req.path} не найден` });
-});
+// Убираем catch-all middleware - SPA fallback обрабатывает не-API запросы
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
-// Обслуживание статических файлов React приложения
+// Обслуживание статических файлов React приложения (ТОЛЬКО ПОСЛЕ API маршрутов)
 const isProduction = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT || process.env.RAILWAY_PROJECT_ID;
 console.log(`🚀 Starting server...`);
 console.log(`Environment: ${process.env.NODE_ENV}`);
@@ -208,22 +211,6 @@ if (isProduction) {
     app.use(express.static(distPath));
     console.log('✅ Static files serving configured');
 
-    // Fallback для SPA
-    app.get('*', (req, res) => {
-      // Пропускаем API запросы
-      if (req.path.startsWith('/api/') || req.path === '/health') {
-        return;
-      }
-
-      try {
-        res.sendFile(path.join(distPath, 'index.html'));
-      } catch (error) {
-        console.error('Error serving index.html:', error);
-        res.status(500).send('Internal Server Error');
-      }
-    });
-
-    console.log('✅ SPA fallback configured');
   } catch (error) {
     console.error('❌ Error configuring static files:', error);
     console.log('This might be normal if running in development mode');
@@ -231,6 +218,30 @@ if (isProduction) {
 } else {
   console.log('ℹ️ Running in development mode - static files not served');
 }
+
+// Fallback для SPA - ДОЛЖЕН БЫТЬ ПОСЛЕДНИМ МАРШРУТОМ
+app.get('*', (req, res) => {
+  console.log(`🌐 SPA fallback called for: ${req.path}`);
+
+  // Пропускаем API запросы - они обрабатываются выше
+  if (req.path.startsWith('/api/')) {
+    console.log('🚫 API request in SPA fallback - this should not happen');
+    return res.status(404).json({ error: 'API endpoint not found' });
+  }
+
+  if (isProduction) {
+    try {
+      console.log('📄 Serving index.html');
+      res.sendFile(path.join(distPath, 'index.html'));
+    } catch (error) {
+      console.error('Error serving index.html:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  } else {
+    console.log('🛠️ Development mode - 404');
+    res.status(404).send('Not found in development mode');
+  }
+});
 
 // Запуск сервера
 await initDatabase();
