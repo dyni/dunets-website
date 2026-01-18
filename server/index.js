@@ -128,12 +128,65 @@ app.get('/api/services', (req, res) => {
       id: '1',
       slug: 'veb-razrabotka',
       title: 'Веб-разработка',
-      description: 'Создание современных веб-сайтов',
+      description: 'Создание современных веб-сайтов и веб-приложений',
       icon: 'code',
+      fullDescription: 'Мы создаем современные веб-сайты и веб-приложения с использованием передовых технологий.',
+      features: ['Анализ требований', 'Разработка', 'Тестирование'],
       priceRange: { min: 1500, max: 15000, currency: 'BYN', description: 'от 1 500 р. до 15 000 р.' }
+    },
+    {
+      id: '2',
+      slug: 'mobilnye-prilozheniya',
+      title: 'Мобильные приложения',
+      description: 'Разработка iOS и Android приложений',
+      icon: 'mobile',
+      fullDescription: 'Мы разрабатываем мобильные приложения для iOS и Android.',
+      features: ['Нативная разработка', 'Кросс-платформенные решения'],
+      priceRange: { min: 4500, max: 24000, currency: 'BYN', description: 'от 4 500 р. до 24 000 р.' }
+    },
+    {
+      id: '3',
+      slug: 'dizayn-ui-ux',
+      title: 'Дизайн UI/UX',
+      description: 'Проектирование удобных интерфейсов',
+      icon: 'design',
+      fullDescription: 'Мы создаем пользовательские интерфейсы.',
+      features: ['Исследование аудитории', 'Проектирование интерфейсов'],
+      priceRange: { min: 900, max: 6000, currency: 'BYN', description: 'от 900 р. до 6 000 р.' }
     }
   ];
   res.json(services);
+});
+
+// API для портфолио
+app.get('/api/portfolio', (req, res) => {
+  const portfolio = [
+    {
+      id: '1',
+      title: 'Интернет-магазин',
+      description: 'Современный e-commerce с интеграцией платежных систем',
+      category: 'E-commerce',
+      tags: ['React', 'Node.js', 'Stripe'],
+      image: '/api/placeholder/400/300'
+    },
+    {
+      id: '2',
+      title: 'Корпоративный сайт',
+      description: 'Представительский сайт для крупной компании',
+      category: 'Business',
+      tags: ['Vue.js', 'Tailwind CSS'],
+      image: '/api/placeholder/400/300'
+    },
+    {
+      id: '3',
+      title: 'Мобильное приложение',
+      description: 'iOS и Android приложение для управления задачами',
+      category: 'Mobile',
+      tags: ['React Native', 'Firebase'],
+      image: '/api/placeholder/400/300'
+    }
+  ];
+  res.json(portfolio);
 });
 
 // API для просмотра заказов (для администратора)

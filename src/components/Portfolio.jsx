@@ -13,11 +13,19 @@ export default function Portfolio() {
 
   const fetchPortfolio = async () => {
     try {
+      console.log('🔄 Загрузка портфолио...');
       const response = await fetch('/api/portfolio');
+      console.log('📡 Ответ API портфолио:', response.status, response.statusText);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+      console.log('✅ Портфолио загружено:', data.length, 'проектов');
       setPortfolio(data);
     } catch (error) {
-      console.error('Ошибка загрузки портфолио:', error);
+      console.error('❌ Ошибка загрузки портфолио:', error);
       // Fallback данные
       setPortfolio([
         {

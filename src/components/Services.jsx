@@ -31,11 +31,19 @@ export default function Services() {
 
   const fetchServices = async () => {
     try {
+      console.log('🔄 Загрузка услуг...');
       const response = await fetch('/api/services');
+      console.log('📡 Ответ API услуг:', response.status, response.statusText);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+      console.log('✅ Услуги загружены:', data.length, 'элементов');
       setServices(data);
     } catch (error) {
-      console.error('Ошибка загрузки услуг:', error);
+      console.error('❌ Ошибка загрузки услуг:', error);
       // Fallback данные
       setServices([
         {
