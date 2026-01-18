@@ -23,10 +23,6 @@ export default function Hero() {
             transition={{ duration: 0.8 }}
             className="text-center md:text-left"
           >
-            {/* ТЕСТОВАЯ СТРОКА ДЛЯ ПРОВЕРКИ АВТОМАТИЧЕСКОГО ДЕПЛОЯ */}
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl mb-6 text-lg font-bold animate-pulse">
-              🚀 ТЕСТ: Автоматический деплой Railway работает! Время: {new Date().toLocaleString('ru-RU')}
-            </div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
