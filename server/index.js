@@ -81,7 +81,7 @@ app.post('/api/orders', async (req, res) => {
 
       const mailOptions = {
         from: '"Dunets Website" <noreply@dunets.skillman.su>',
-        to: 'info@dunets.skillman.su', // Email студии
+        to: 'dyni@mail.ru', // Email студии
         subject: `Новая заявка от ${newOrder.name}`,
         html: `
           <h2>Новая заявка с сайта Dunets</h2>
