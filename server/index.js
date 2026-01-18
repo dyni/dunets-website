@@ -177,6 +177,22 @@ app.use((req, res) => {
   res.status(404).json({ error: `Маршрут ${req.method} ${req.path} не найден` });
 });
 
+// Обслуживание статических файлов React приложения
+const isProduction = process.env.NODE_ENV === 'production';
+if (isProduction) {
+  const distPath = path.join(__dirname, '..', 'dist');
+  app.use(express.static(distPath));
+
+  // Fallback для SPA - все не-API запросы возвращают index.html
+  app.get('*', (req, res) => {
+    // Пропускаем API запросы
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ error: 'API endpoint not found' });
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
+
 // Запуск сервера
 await initDatabase();
 app.listen(PORT, () => {
@@ -186,4 +202,8 @@ app.listen(PORT, () => {
   console.log(`   GET /api/services/:id`);
   console.log(`   GET /api/portfolio`);
   console.log(`   POST /api/orders`);
+  if (isProduction) {
+    console.log(`🌐 Статические файлы обслуживаются из dist/`);
+    console.log(`🔄 SPA fallback настроен`);
+  }
 });
