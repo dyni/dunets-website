@@ -1,87 +1,17 @@
 import express from 'express';
 import cors from 'cors';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 5000;
-const DATA_DIR = path.join(__dirname, '..', 'data');
+const PORT = process.env.PORT || 5000;
 
-// Создаем папку data если её нет
-await fs.mkdir(DATA_DIR, { recursive: true });
+console.log('🚀 Starting minimal server...');
+console.log(`Port: ${PORT}`);
+console.log(`Environment: ${process.env.NODE_ENV}`);
 
 app.use(cors());
 app.use(express.json());
 
-// Инициализация базы данных
-async function initDatabase() {
-  const portfolioPath = path.join(DATA_DIR, 'portfolio.json');
-  const servicesPath = path.join(DATA_DIR, 'services.json');
-  const testimonialsPath = path.join(DATA_DIR, 'testimonials.json');
-  
-  try {
-    await fs.access(portfolioPath);
-  } catch {
-    // Примеры портфолио
-    const defaultPortfolio = [
-      {
-        id: '1',
-        title: 'Интернет-магазин',
-        description: 'Современный e-commerce с интеграцией платежных систем',
-        image: '/api/placeholder/400/300',
-        category: 'E-commerce',
-        tags: ['React', 'Node.js', 'Stripe']
-      },
-      {
-        id: '2',
-        title: 'Корпоративный сайт',
-        description: 'Представительский сайт для крупной компании',
-        image: '/api/placeholder/400/300',
-        category: 'Business',
-        tags: ['Vue.js', 'Tailwind CSS']
-      }
-    ];
-    await fs.writeFile(portfolioPath, JSON.stringify(defaultPortfolio, null, 2));
-  }
-  
-  try {
-    await fs.access(servicesPath);
-  } catch {
-    const defaultServices = [
-      {
-        id: '1',
-        title: 'Веб-разработка',
-        description: 'Создание современных веб-сайтов и веб-приложений',
-        icon: 'code'
-      },
-      {
-        id: '2',
-        title: 'Мобильные приложения',
-        description: 'Разработка iOS и Android приложений',
-        icon: 'mobile'
-      },
-      {
-        id: '3',
-        title: 'Дизайн UI/UX',
-        description: 'Проектирование удобных интерфейсов',
-        icon: 'design'
-      }
-    ];
-    await fs.writeFile(servicesPath, JSON.stringify(defaultServices, null, 2));
-  }
-  
-  try {
-    await fs.access(testimonialsPath);
-  } catch {
-    await fs.writeFile(testimonialsPath, JSON.stringify([], null, 2));
-  }
-}
-
-// Health check endpoint
+// Health check
 app.get('/health', (req, res) => {
   console.log('🏥 Health check called');
   res.json({
@@ -92,168 +22,101 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API для портфолио
-app.get('/api/portfolio', async (req, res) => {
+// API для заказов
+const orders = [];
+app.post('/api/orders', (req, res) => {
   try {
-    const portfolioPath = path.join(DATA_DIR, 'portfolio.json');
-    const data = await fs.readFile(portfolioPath, 'utf-8');
-    const portfolio = JSON.parse(data);
-    res.json(portfolio);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// API для услуг
-app.get('/api/services', async (req, res) => {
-  try {
-    const servicesPath = path.join(DATA_DIR, 'services.json');
-    const data = await fs.readFile(servicesPath, 'utf-8');
-    const services = JSON.parse(data);
-    res.json(services);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Получить одну услугу по slug
-app.get('/api/services/:slug', async (req, res) => {
-  try {
-    const servicesPath = path.join(DATA_DIR, 'services.json');
-    const data = await fs.readFile(servicesPath, 'utf-8');
-    const services = JSON.parse(data);
-
-    // Логируем для отладки
-    console.log(`Поиск услуги со slug: "${req.params.slug}"`);
-    console.log(`Все услуги:`, services.map(s => ({ id: s.id, slug: s.slug, title: s.title })));
-
-    // Ищем услугу по slug
-    const service = services.find(s => s.slug === req.params.slug);
-
-    if (!service) {
-      console.log(`Услуга со slug "${req.params.slug}" не найдена. Доступные slug:`, services.map(s => s.slug));
-      return res.status(404).json({ error: 'Услуга не найдена' });
-    }
-
-    console.log(`Услуга найдена:`, service.title);
-    res.json(service);
-  } catch (error) {
-    console.error('Ошибка при получении услуги:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Сохранить заявку на услугу
-app.post('/api/orders', async (req, res) => {
-  try {
-    const ordersPath = path.join(DATA_DIR, 'orders.json');
-    let orders = [];
-    
-    try {
-      const data = await fs.readFile(ordersPath, 'utf-8');
-      orders = JSON.parse(data);
-    } catch {
-      // Файл не существует, создадим новый
-    }
-    
     const newOrder = {
       id: Date.now().toString(),
       ...req.body,
       createdAt: new Date().toISOString(),
     };
-    
     orders.push(newOrder);
-    await fs.writeFile(ordersPath, JSON.stringify(orders, null, 2));
-    
+    console.log('📝 New order:', newOrder.name, newOrder.email);
     res.status(201).json({ message: 'Заявка успешно отправлена', order: newOrder });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Order error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// API для отзывов
-app.get('/api/testimonials', async (req, res) => {
-  try {
-    const testimonialsPath = path.join(DATA_DIR, 'testimonials.json');
-    const data = await fs.readFile(testimonialsPath, 'utf-8');
-    const testimonials = JSON.parse(data);
-    res.json(testimonials);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Убираем catch-all middleware - SPA fallback обрабатывает не-API запросы
-
-// Обслуживание статических файлов React приложения (ТОЛЬКО ПОСЛЕ API маршрутов)
-const isProduction = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT || process.env.RAILWAY_PROJECT_ID;
-console.log(`🚀 Starting server...`);
-console.log(`Environment: ${process.env.NODE_ENV}`);
-console.log(`Railway Environment: ${process.env.RAILWAY_ENVIRONMENT}`);
-console.log(`Railway Project ID: ${process.env.RAILWAY_PROJECT_ID}`);
-console.log(`Current directory: ${__dirname}`);
-
-const distPath = path.join(__dirname, '..', 'dist');
-console.log(`Dist path: ${distPath}`);
-
-if (isProduction) {
-  try {
-    // Проверяем, существует ли папка dist
-    const fs = await import('fs/promises');
-    await fs.access(distPath);
-    console.log('✅ Dist folder exists');
-
-    // Проверяем index.html
-    await fs.access(path.join(distPath, 'index.html'));
-    console.log('✅ index.html found');
-
-    // Обслуживаем статические файлы
-    app.use(express.static(distPath));
-    console.log('✅ Static files serving configured');
-
-  } catch (error) {
-    console.error('❌ Error configuring static files:', error);
-    console.log('This might be normal if running in development mode');
-  }
-} else {
-  console.log('ℹ️ Running in development mode - static files not served');
-}
-
-// Fallback для SPA - ДОЛЖЕН БЫТЬ ПОСЛЕДНИМ МАРШРУТОМ
-app.get('*', (req, res) => {
-  console.log(`🌐 SPA fallback called for: ${req.path}`);
-
-  // Пропускаем API запросы - они обрабатываются выше
-  if (req.path.startsWith('/api/')) {
-    console.log('🚫 API request in SPA fallback - this should not happen');
-    return res.status(404).json({ error: 'API endpoint not found' });
-  }
-
-  if (isProduction) {
-    try {
-      console.log('📄 Serving index.html');
-      res.sendFile(path.join(distPath, 'index.html'));
-    } catch (error) {
-      console.error('Error serving index.html:', error);
-      res.status(500).send('Internal Server Error');
+// API для услуг
+app.get('/api/services', (req, res) => {
+  const services = [
+    {
+      id: '1',
+      slug: 'veb-razrabotka',
+      title: 'Веб-разработка',
+      description: 'Создание современных веб-сайтов',
+      icon: 'code',
+      priceRange: { min: 1500, max: 15000, currency: 'BYN', description: 'от 1 500 р. до 15 000 р.' }
     }
-  } else {
-    console.log('🛠️ Development mode - 404');
-    res.status(404).send('Not found in development mode');
-  }
+  ];
+  res.json(services);
+});
+
+// SPA fallback - возвращает простую страницу
+app.get('*', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dunets - Студия веб-разработки в Мозыре</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                text-align: center;
+                padding: 50px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                min-height: 100vh;
+                margin: 0;
+            }
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background: rgba(255, 255, 255, 0.1);
+                padding: 40px;
+                border-radius: 20px;
+                backdrop-filter: blur(10px);
+            }
+            .loader {
+                border: 4px solid rgba(255, 255, 255, 0.3);
+                border-top: 4px solid white;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 2s linear infinite;
+                margin: 20px auto;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            h1 { margin-bottom: 10px; font-size: 2.5em; }
+            p { margin: 10px 0; opacity: 0.8; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Dunets</h1>
+            <div class="loader"></div>
+            <p>Студия веб-разработки в Мозыре</p>
+            <p>Приложение загружается...</p>
+            <p>Если страница не загружается, попробуйте обновить.</p>
+        </div>
+    </body>
+    </html>
+  `);
 });
 
 // Запуск сервера
-await initDatabase();
 app.listen(PORT, () => {
-  console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
-  console.log(`📡 Доступные API:`);
-  console.log(`   GET /api/services`);
-  console.log(`   GET /api/services/:id`);
-  console.log(`   GET /api/portfolio`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📡 Available endpoints:`);
+  console.log(`   GET  /health`);
   console.log(`   POST /api/orders`);
-  if (isProduction) {
-    console.log(`🌐 Статические файлы обслуживаются из dist/`);
-    console.log(`🔄 SPA fallback настроен`);
-  }
+  console.log(`   GET  /api/services`);
 });
