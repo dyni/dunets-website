@@ -52,11 +52,11 @@ SMTP_PASS=пароль-приложения
 
 ## Адреса для уведомлений
 
-По умолчанию emails отправляются на: `info@dunets.skillman.su`
+По умолчанию emails отправляются на: `dyni@mail.ru`
 
 Изменить можно в коде `server/index.js`:
 ```javascript
-to: 'ваш-email@dunets.skillman.su'
+to: 'ваш-email@mail.ru'
 ```
 
 ## Тестирование
