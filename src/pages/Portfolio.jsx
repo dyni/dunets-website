@@ -1,0 +1,115 @@
+import { Helmet } from 'react-helmet-async';
+import { motion } from 'framer-motion';
+import Header from '../components/Header';
+import Portfolio from '../components/Portfolio';
+import Footer from '../components/Footer';
+
+export default function PortfolioPage() {
+  return (
+    <>
+      <Helmet>
+        <title>Портфoliо студии Dunets | Примеры наших проектов</title>
+        <meta name="description" content="Посмотрите примеры наших работ: интернет-магазины, корпоративные сайты, мобильные приложения. Более 50 успешно реализованных проектов." />
+        <meta property="og:title" content="Портфолио студии Dunets | Примеры работ" />
+        <meta property="og:description" content="Интернет-магазины, корпоративные сайты, мобильные приложения - примеры успешных проектов нашей студии." />
+        <meta property="og:type" content="website" />
+
+        {/* Schema.org Organization */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Dunets",
+            "alternateName": "Dunets Web Studio",
+            "description": "Студия веб-разработки. Создание современных сайтов и приложений.",
+            "url": "https://dunets.ru",
+            "logo": "https://dunets.ru/logo.png",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+375-29-123-45-67",
+              "contactType": "customer service",
+              "availableLanguage": "Russian"
+            },
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Минск",
+              "addressCountry": "BY"
+            },
+            "sameAs": [
+              "https://github.com/dunets",
+              "https://linkedin.com/company/dunets"
+            ]
+          })}
+        </script>
+
+        {/* Schema.org CreativeWork Collection */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "Портфолио студии Dunets",
+            "description": "Примеры выполненных проектов веб-разработки",
+            "url": "https://dunets.ru/portfolio",
+            "mainEntity": {
+              "@type": "ItemList",
+              "name": "Проекты портфолио",
+              "description": "Коллекция успешных проектов студии Dunets",
+              "itemListElement": [
+                {
+                  "@type": "CreativeWork",
+                  "name": "Интернет-магазин",
+                  "description": "Современный e-commerce с интеграцией платежных систем",
+                  "creator": {
+                    "@type": "Organization",
+                    "name": "Dunets"
+                  },
+                  "genre": "E-commerce",
+                  "datePublished": "2024",
+                  "keywords": "React, Node.js, Stripe"
+                },
+                {
+                  "@type": "CreativeWork",
+                  "name": "Корпоративный сайт",
+                  "description": "Представительский сайт для крупной компании",
+                  "creator": {
+                    "@type": "Organization",
+                    "name": "Dunets"
+                  },
+                  "genre": "Business Website",
+                  "datePublished": "2024",
+                  "keywords": "Vue.js, Tailwind CSS"
+                },
+                {
+                  "@type": "CreativeWork",
+                  "name": "Мобильное приложение",
+                  "description": "iOS и Android приложение для управления задачами",
+                  "creator": {
+                    "@type": "Organization",
+                    "name": "Dunets"
+                  },
+                  "genre": "Mobile App",
+                  "datePublished": "2024",
+                  "keywords": "React Native, Firebase"
+                }
+              ]
+            }
+          })}
+        </script>
+      </Helmet>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Фоновые эффекты */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: '4s' }}></div>
+      </div>
+
+      <Header />
+      <div className="pt-20">
+        <Portfolio />
+      </div>
+      <Footer />
+      </div>
+    </>
+  );
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "title": "Интернет-магазин",
+    "description": "Современный e-commerce с интеграцией платежных систем",
+    "category": "E-commerce",
+    "tags": ["React", "Node.js", "Stripe"]
+  },
+  {
+    "id": "2",
+    "title": "Корпоративный сайт",
+    "description": "Представительский сайт для крупной компании",
+    "category": "Business",
+    "tags": ["Vue.js", "Tailwind CSS"]
+  },
+  {
+    "id": "3",
+    "title": "Мобильное приложение",
+    "description": "iOS и Android приложение для управления задачами",
+    "category": "Mobile",
+    "tags": ["React Native", "Firebase"]
+  }
+]
