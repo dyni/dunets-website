@@ -22,8 +22,8 @@ export default function PortfolioPage() {
             "name": "Dunets",
             "alternateName": "Dunets Web Studio",
             "description": "Студия веб-разработки. Создание современных сайтов и приложений.",
-            "url": "https://dunets.ru",
-            "logo": "https://dunets.ru/logo.png",
+            "url": "https://dunets.skillman.su",
+            "logo": "https://dunets.skillman.su/logo.png",
             "contactPoint": {
               "@type": "ContactPoint",
               "telephone": "+375-29-123-45-67",
@@ -32,7 +32,7 @@ export default function PortfolioPage() {
             },
             "address": {
               "@type": "PostalAddress",
-              "addressLocality": "Минск",
+              "addressLocality": "Мозырь",
               "addressCountry": "BY"
             },
             "sameAs": [
@@ -49,7 +49,7 @@ export default function PortfolioPage() {
             "@type": "CollectionPage",
             "name": "Портфолио студии Dunets",
             "description": "Примеры выполненных проектов веб-разработки",
-            "url": "https://dunets.ru/portfolio",
+            "url": "https://dunets.skillman.su/portfolio",
             "mainEntity": {
               "@type": "ItemList",
               "name": "Проекты портфолио",

@@ -46,7 +46,7 @@ export default function Footer() {
             <ul className="space-y-2 text-white/60">
               <li>info@dunets.by</li>
               <li>+375 (29) 123-45-67</li>
-              <li>Минск, ул. Примерная, д. 1</li>
+              <li>Мозырь, ул. Примерная, д. 1</li>
             </ul>
           </div>
         </div>

@@ -170,8 +170,8 @@ export default function ServiceDetail() {
             "name": "Dunets",
             "alternateName": "Dunets Web Studio",
             "description": "Студия веб-разработки. Создание современных сайтов и приложений.",
-            "url": "https://dunets.ru",
-            "logo": "https://dunets.ru/logo.png",
+            "url": "https://dunets.skillman.su",
+            "logo": "https://dunets.skillman.su/logo.png",
             "contactPoint": {
               "@type": "ContactPoint",
               "telephone": "+375-29-123-45-67",
@@ -180,7 +180,7 @@ export default function ServiceDetail() {
             },
             "address": {
               "@type": "PostalAddress",
-              "addressLocality": "Минск",
+              "addressLocality": "Мозырь",
               "addressCountry": "BY"
             },
             "sameAs": [
@@ -200,7 +200,7 @@ export default function ServiceDetail() {
             "provider": {
               "@type": "Organization",
               "name": "Dunets",
-              "url": "https://dunets.ru"
+              "url": "https://dunets.skillman.su"
             },
             "serviceType": service.title,
             "areaServed": "RU",

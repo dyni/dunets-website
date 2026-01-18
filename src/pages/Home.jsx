@@ -12,9 +12,9 @@ export default function Home() {
   return (
     <>
       <Helmet>
-        <title>Dunets - Студия веб-разработки | Создание современных сайтов</title>
-        <meta name="description" content="Профессиональная разработка веб-сайтов и приложений. Создаём современные цифровые решения для вашего бизнеса с использованием передовых технологий." />
-        <meta property="og:title" content="Dunets - Студия веб-разработки" />
+        <title>Dunets - Студия веб-разработки в Мозыре | Создание современных сайтов</title>
+        <meta name="description" content="Профессиональная разработка веб-сайтов и приложений в Мозыре. Создаём современные цифровые решения для вашего бизнеса с использованием передовых технологий." />
+        <meta property="og:title" content="Dunets - Студия веб-разработки в Мозыре" />
         <meta property="og:description" content="Профессиональная разработка веб-сайтов и приложений. Создаём современные цифровые решения для вашего бизнеса." />
         <meta property="og:type" content="website" />
 
@@ -26,8 +26,8 @@ export default function Home() {
             "name": "Dunets",
             "alternateName": "Dunets Web Studio",
             "description": "Студия веб-разработки. Создание современных сайтов и приложений.",
-            "url": "https://dunets.ru",
-            "logo": "https://dunets.ru/logo.png",
+            "url": "https://dunets.skillman.su",
+            "logo": "https://dunets.skillman.su/logo.png",
             "contactPoint": {
               "@type": "ContactPoint",
               "telephone": "+375-29-123-45-67",
@@ -36,7 +36,8 @@ export default function Home() {
             },
             "address": {
               "@type": "PostalAddress",
-              "addressLocality": "Минск",
+              "addressLocality": "Мозырь",
+              "addressRegion": "Гомельская область",
               "addressCountry": "BY"
             },
             "sameAs": [
@@ -67,7 +68,7 @@ export default function Home() {
             },
             "potentialAction": {
               "@type": "SearchAction",
-              "target": "https://dunets.ru/search?q={search_term_string}",
+              "target": "https://dunets.skillman.su/search?q={search_term_string}",
               "query-input": "required name=search_term_string"
             }
           })}

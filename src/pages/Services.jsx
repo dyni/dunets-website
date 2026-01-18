@@ -22,8 +22,8 @@ export default function ServicesPage() {
             "name": "Dunets",
             "alternateName": "Dunets Web Studio",
             "description": "Студия веб-разработки. Создание современных сайтов и приложений.",
-            "url": "https://dunets.ru",
-            "logo": "https://dunets.ru/logo.png",
+            "url": "https://dunets.skillman.su",
+            "logo": "https://dunets.skillman.su/logo.png",
             "contactPoint": {
               "@type": "ContactPoint",
               "telephone": "+375-29-123-45-67",
@@ -32,7 +32,7 @@ export default function ServicesPage() {
             },
             "address": {
               "@type": "PostalAddress",
-              "addressLocality": "Минск",
+              "addressLocality": "Мозырь",
               "addressCountry": "BY"
             },
             "sameAs": [
@@ -49,12 +49,12 @@ export default function ServicesPage() {
             "@type": "ItemList",
             "name": "Услуги студии Dunets",
             "description": "Полный каталог услуг веб-разработки",
-            "url": "https://dunets.ru/services",
+            "url": "https://dunets.skillman.su/services",
             "numberOfItems": 12,
             "itemListElement": [
               {
                 "@type": "Service",
-                "@id": "https://dunets.ru/services/1",
+                "@id": "https://dunets.skillman.su/services/1",
                 "name": "Веб-разработка",
                 "description": "Создание современных веб-сайтов и веб-приложений",
                 "provider": {
@@ -71,7 +71,7 @@ export default function ServicesPage() {
               },
               {
                 "@type": "Service",
-                "@id": "https://dunets.ru/services/2",
+                "@id": "https://dunets.skillman.su/services/2",
                 "name": "Мобильные приложения",
                 "description": "Разработка iOS и Android приложений",
                 "provider": {
@@ -83,7 +83,7 @@ export default function ServicesPage() {
               },
               {
                 "@type": "Service",
-                "@id": "https://dunets.ru/services/3",
+                "@id": "https://dunets.skillman.su/services/3",
                 "name": "Дизайн UI/UX",
                 "description": "Проектирование удобных интерфейсов",
                 "provider": {
@@ -95,7 +95,7 @@ export default function ServicesPage() {
               },
               {
                 "@type": "Service",
-                "@id": "https://dunets.ru/services/4",
+                "@id": "https://dunets.skillman.su/services/4",
                 "name": "SEO-оптимизация",
                 "description": "Повышение видимости сайта в поисковых системах",
                 "provider": {
@@ -107,7 +107,7 @@ export default function ServicesPage() {
               },
               {
                 "@type": "Service",
-                "@id": "https://dunets.ru/services/5",
+                "@id": "https://dunets.skillman.su/services/5",
                 "name": "Интернет-магазины",
                 "description": "Создание полнофункциональных онлайн-магазинов",
                 "provider": {
@@ -119,7 +119,7 @@ export default function ServicesPage() {
               },
               {
                 "@type": "Service",
-                "@id": "https://dunets.ru/services/11",
+                "@id": "https://dunets.skillman.su/services/11",
                 "name": "Контекстная реклама",
                 "description": "Настройка и ведение рекламных кампаний",
                 "provider": {
@@ -131,7 +131,7 @@ export default function ServicesPage() {
               },
               {
                 "@type": "Service",
-                "@id": "https://dunets.ru/services/12",
+                "@id": "https://dunets.skillman.su/services/12",
                 "name": "Анализ кода",
                 "description": "Поиск ошибок и оптимизация кода",
                 "provider": {

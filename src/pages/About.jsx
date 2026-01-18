@@ -22,8 +22,8 @@ export default function AboutPage() {
             "name": "Dunets",
             "alternateName": "Dunets Web Studio",
             "description": "Студия веб-разработки. Создание современных сайтов и приложений.",
-            "url": "https://dunets.ru",
-            "logo": "https://dunets.ru/logo.png",
+            "url": "https://dunets.skillman.su",
+            "logo": "https://dunets.skillman.su/logo.png",
             "foundingDate": "2020",
             "numberOfEmployees": "10-20",
             "contactPoint": {
@@ -34,7 +34,7 @@ export default function AboutPage() {
             },
             "address": {
               "@type": "PostalAddress",
-              "addressLocality": "Минск",
+              "addressLocality": "Мозырь",
               "addressCountry": "BY"
             },
             "sameAs": [
@@ -89,7 +89,7 @@ export default function AboutPage() {
             "@type": "AboutPage",
             "name": "О студии Dunets",
             "description": "Информация о команде профессионалов студии Dunets",
-            "url": "https://dunets.ru/about",
+            "url": "https://dunets.skillman.su/about",
             "mainEntity": {
               "@type": "Organization",
               "name": "Dunets",

@@ -60,7 +60,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="text-white font-semibold">Email</h3>
-                  <p className="text-white/70">info@dunets.ru</p>
+                  <p className="text-white/70">info@dunets.skillman.su</p>
                 </div>
               </div>
             </div>

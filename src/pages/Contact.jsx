@@ -22,8 +22,8 @@ export default function ContactPage() {
             "name": "Dunets",
             "alternateName": "Dunets Web Studio",
             "description": "Студия веб-разработки. Создание современных сайтов и приложений.",
-            "url": "https://dunets.ru",
-            "logo": "https://dunets.ru/logo.png",
+            "url": "https://dunets.skillman.su",
+            "logo": "https://dunets.skillman.su/logo.png",
             "contactPoint": {
               "@type": "ContactPoint",
               "telephone": "+7-999-123-45-67",
@@ -49,7 +49,7 @@ export default function ContactPage() {
             "@type": "ContactPage",
             "name": "Контакты студии Dunets",
             "description": "Свяжитесь с нами для обсуждения вашего проекта",
-            "url": "https://dunets.ru/contact",
+            "url": "https://dunets.skillman.su/contact",
             "mainEntity": {
               "@type": "Organization",
               "name": "Dunets",
@@ -69,16 +69,16 @@ export default function ContactPage() {
                 },
                 {
                   "@type": "ContactPoint",
-                  "email": "info@dunets.ru",
+                  "email": "info@dunets.skillman.su",
                   "contactType": "customer service",
                   "availableLanguage": "Russian"
                 }
               ],
               "address": {
                 "@type": "PostalAddress",
-                "addressLocality": "Москва",
-                "addressRegion": "Москва",
-                "addressCountry": "RU",
+                "addressLocality": "Мозырь",
+                "addressRegion": "Гомельская область",
+                "addressCountry": "BY",
                 "streetAddress": "ул. Примерная, д. 1"
               }
             }
@@ -90,17 +90,17 @@ export default function ContactPage() {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
-            "@id": "https://dunets.ru",
+            "@id": "https://dunets.skillman.su",
             "name": "Dunets Web Studio",
             "alternateName": "Dunets",
-            "description": "Студия веб-разработки. Создание современных сайтов и приложений.",
-            "url": "https://dunets.ru",
+            "description": "Студия веб-разработки в Мозыре. Создание современных сайтов и приложений.",
+            "url": "https://dunets.skillman.su",
             "telephone": "+375-29-123-45-67",
             "email": "info@dunets.by",
               "address": {
                 "@type": "PostalAddress",
-                "addressLocality": "Минск",
-                "addressRegion": "Минск",
+                "addressLocality": "Мозырь",
+                "addressRegion": "Гомельская область",
                 "addressCountry": "BY",
                 "streetAddress": "ул. Примерная, д. 1"
               },
