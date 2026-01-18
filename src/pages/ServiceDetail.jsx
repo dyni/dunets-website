@@ -43,7 +43,7 @@ export default function ServiceDetail() {
     setError(null);
     try {
       console.log('Запрос услуги со slug:', slug);
-      const response = await fetch(`http://localhost:5000/api/services/${slug}`);
+      const response = await fetch(`/api/services/${slug}`);
       console.log('Ответ сервера:', response.status, response.statusText);
 
       if (!response.ok) {
