@@ -140,6 +140,132 @@ npm run dev:server
 npm run build
 ```
 
+## 🚀 Развертывание
+
+### Быстрое развертывание
+
+[![Deploy to Railway](https://railway.app/button)](https://railway.app/new)
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+### Варианты хостинга
+
+#### 1. Railway (Рекомендую)
+```bash
+# Установите Railway CLI
+npm install -g @railway/cli
+railway login
+railway link
+railway up
+```
+
+#### 2. Vercel + Railway
+```bash
+# Frontend на Vercel
+npm install -g vercel
+vercel --prod
+
+# Backend на Railway (см. выше)
+```
+
+#### 3. Render
+```bash
+# Подключите GitHub репозиторий
+# Выберите "Web Service" для Node.js
+```
+
+#### 4. Beget хостинг
+```bash
+# Загрузите файлы через FTP
+# Включите Node.js в панели управления
+# Настройте домен и SSL
+```
+
+### Ручное развертывание
+
+#### Backend (Express)
+```bash
+npm install
+npm run build
+npm start
+```
+
+#### Frontend (React)
+```bash
+npm run build
+# Содержимое папки dist/ загрузите на хостинг
+```
+
+### Переменные окружения
+
+Создайте `.env` файл:
+```env
+NODE_ENV=production
+PORT=5000
+# Добавьте другие переменные при необходимости
+```
+
+### Структура для хостинга
+
+```
+yourdomain.com/
+├── 📁 api/              # Backend (Railway/Render)
+├── 📁 dist/             # Frontend (Vercel/Netlify)
+└── 📁 data/             # JSON база данных
+```
+
+## 🐛 Устранение неполадок
+
+### Ошибка "Port already in use"
+```bash
+# Найти процесс
+lsof -i :5000
+# Или на Windows
+netstat -ano | findstr :5000
+
+# Завершить процесс
+kill -9 <PID>
+```
+
+### Ошибка CORS
+Обновите `server/index.js`:
+```javascript
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? 'https://your-frontend-domain.com'
+    : 'http://localhost:3000'
+};
+```
+
+### Проблемы с JSON базой
+```bash
+# Проверьте права доступа
+chmod 644 data/*.json
+
+# Проверьте кодировку UTF-8
+file data/services.json
+```
+
+## 📊 Мониторинг
+
+### Railway
+- Логи: `railway logs`
+- Метрики: Dashboard → Metrics
+
+### Vercel
+- Analytics: Dashboard → Analytics
+- Functions: Dashboard → Functions
+
+### Render
+- Logs: Dashboard → Logs
+- Metrics: Dashboard → Metrics
+
+## 📞 Поддержка
+
+- **Документация**: [Railway Docs](https://docs.railway.app/)
+- **Сообщество**: [Railway Discord](https://discord.gg/railway)
+- **Issues**: [GitHub Issues](https://github.com/dyni/dunets-website/issues)
+
 ## 📄 Лицензия
 
 MIT
