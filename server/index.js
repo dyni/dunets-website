@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import nodemailer from 'nodemailer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,6 +17,21 @@ console.log(`Directory: ${__dirname}`);
 
 app.use(cors());
 app.use(express.json());
+
+// Настройка email отправки
+const createEmailTransporter = () => {
+  // Для тестирования используем Ethereal (фейковый SMTP)
+  // В продакшене замените на реальный SMTP (Gmail, Yandex, etc.)
+  return nodemailer.createTransporter({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.ETHEREAL_USER || 'test@example.com',
+      pass: process.env.ETHEREAL_PASS || 'test'
+    }
+  });
+};
 
 // Обслуживание статических файлов React (если они есть)
 const distPath = path.join(__dirname, '..', 'dist');
@@ -43,7 +59,7 @@ app.get('/health', (req, res) => {
 
 // API для заказов
 const orders = [];
-app.post('/api/orders', (req, res) => {
+app.post('/api/orders', async (req, res) => {
   try {
     const newOrder = {
       id: Date.now().toString(),
@@ -51,11 +67,57 @@ app.post('/api/orders', (req, res) => {
       createdAt: new Date().toISOString(),
     };
     orders.push(newOrder);
-    console.log('📝 New order:', newOrder.name, newOrder.email);
-    res.status(201).json({ message: 'Заявка успешно отправлена', order: newOrder });
+
+    console.log('📝 New order received:');
+    console.log('   Name:', newOrder.name);
+    console.log('   Email:', newOrder.email);
+    console.log('   Phone:', newOrder.phone);
+    console.log('   Service:', newOrder.serviceName || 'Not specified');
+    console.log('   Message:', newOrder.message);
+
+    // Отправка email уведомления
+    try {
+      const transporter = createEmailTransporter();
+
+      const mailOptions = {
+        from: '"Dunets Website" <noreply@dunets.skillman.su>',
+        to: 'info@dunets.skillman.su', // Email студии
+        subject: `Новая заявка от ${newOrder.name}`,
+        html: `
+          <h2>Новая заявка с сайта Dunets</h2>
+          <p><strong>Имя:</strong> ${newOrder.name}</p>
+          <p><strong>Email:</strong> ${newOrder.email}</p>
+          <p><strong>Телефон:</strong> ${newOrder.phone || 'Не указан'}</p>
+          <p><strong>Услуга:</strong> ${newOrder.serviceName || 'Не указана'}</p>
+          <p><strong>Сообщение:</strong></p>
+          <p>${newOrder.message || 'Без сообщения'}</p>
+          <hr>
+          <p><em>Отправлено: ${new Date().toLocaleString('ru-RU')}</em></p>
+        `,
+        replyTo: newOrder.email
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log('📧 Email sent successfully:', info.messageId);
+
+      // Для Ethereal показываем ссылку на просмотр
+      if (info.messageId && info.messageId.includes('ethereal')) {
+        console.log('📧 Preview URL:', nodemailer.getTestMessageUrl(info));
+      }
+
+    } catch (emailError) {
+      console.error('❌ Email sending failed:', emailError);
+      // Не ломаем API из-за проблем с email
+    }
+
+    res.status(201).json({
+      message: 'Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.',
+      order: newOrder
+    });
+
   } catch (error) {
-    console.error('Order error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('❌ Order processing error:', error);
+    res.status(500).json({ error: 'Ошибка обработки заявки' });
   }
 });
 
@@ -72,6 +134,16 @@ app.get('/api/services', (req, res) => {
     }
   ];
   res.json(services);
+});
+
+// API для просмотра заказов (для администратора)
+app.get('/api/orders', (req, res) => {
+  // В продакшене добавьте аутентификацию!
+  console.log('📋 Orders requested - total:', orders.length);
+  res.json({
+    total: orders.length,
+    orders: orders.slice(-10) // Последние 10 заказов
+  });
 });
 
 // SPA fallback
@@ -160,8 +232,10 @@ app.get('*', (req, res) => {
 // Запуск сервера
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📧 Email notifications: ${process.env.ETHEREAL_USER ? 'Enabled (Ethereal)' : 'Disabled'}`);
   console.log(`📡 Available endpoints:`);
   console.log(`   GET  /health`);
-  console.log(`   POST /api/orders`);
+  console.log(`   POST /api/orders (with email notification)`);
+  console.log(`   GET  /api/orders (admin view)`);
   console.log(`   GET  /api/services`);
 });
