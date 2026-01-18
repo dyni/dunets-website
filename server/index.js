@@ -177,20 +177,59 @@ app.use((req, res) => {
   res.status(404).json({ error: `Маршрут ${req.method} ${req.path} не найден` });
 });
 
-// Обслуживание статических файлов React приложения
-const isProduction = process.env.NODE_ENV === 'production';
-if (isProduction) {
-  const distPath = path.join(__dirname, '..', 'dist');
-  app.use(express.static(distPath));
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
 
-  // Fallback для SPA - все не-API запросы возвращают index.html
-  app.get('*', (req, res) => {
-    // Пропускаем API запросы
-    if (req.path.startsWith('/api/')) {
-      return res.status(404).json({ error: 'API endpoint not found' });
-    }
-    res.sendFile(path.join(distPath, 'index.html'));
-  });
+// Обслуживание статических файлов React приложения
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT || process.env.RAILWAY_PROJECT_ID;
+console.log(`🚀 Starting server...`);
+console.log(`Environment: ${process.env.NODE_ENV}`);
+console.log(`Railway Environment: ${process.env.RAILWAY_ENVIRONMENT}`);
+console.log(`Railway Project ID: ${process.env.RAILWAY_PROJECT_ID}`);
+console.log(`Current directory: ${__dirname}`);
+
+const distPath = path.join(__dirname, '..', 'dist');
+console.log(`Dist path: ${distPath}`);
+
+if (isProduction) {
+  try {
+    // Проверяем, существует ли папка dist
+    const fs = await import('fs/promises');
+    await fs.access(distPath);
+    console.log('✅ Dist folder exists');
+
+    // Проверяем index.html
+    await fs.access(path.join(distPath, 'index.html'));
+    console.log('✅ index.html found');
+
+    // Обслуживаем статические файлы
+    app.use(express.static(distPath));
+    console.log('✅ Static files serving configured');
+
+    // Fallback для SPA
+    app.get('*', (req, res) => {
+      // Пропускаем API запросы
+      if (req.path.startsWith('/api/') || req.path === '/health') {
+        return;
+      }
+
+      try {
+        res.sendFile(path.join(distPath, 'index.html'));
+      } catch (error) {
+        console.error('Error serving index.html:', error);
+        res.status(500).send('Internal Server Error');
+      }
+    });
+
+    console.log('✅ SPA fallback configured');
+  } catch (error) {
+    console.error('❌ Error configuring static files:', error);
+    console.log('This might be normal if running in development mode');
+  }
+} else {
+  console.log('ℹ️ Running in development mode - static files not served');
 }
 
 // Запуск сервера
