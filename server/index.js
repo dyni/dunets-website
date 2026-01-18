@@ -1,15 +1,34 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-console.log('🚀 Starting minimal server...');
+console.log('🚀 Starting server...');
 console.log(`Port: ${PORT}`);
 console.log(`Environment: ${process.env.NODE_ENV}`);
+console.log(`Directory: ${__dirname}`);
 
 app.use(cors());
 app.use(express.json());
+
+// Обслуживание статических файлов React (если они есть)
+const distPath = path.join(__dirname, '..', 'dist');
+try {
+  // Проверяем, существует ли папка dist
+  const fs = await import('fs/promises');
+  await fs.access(distPath);
+  console.log('✅ Dist folder found, serving static files');
+
+  app.use(express.static(distPath));
+} catch (error) {
+  console.log('ℹ️ Dist folder not found, using fallback only');
+}
 
 // Health check
 app.get('/health', (req, res) => {
@@ -55,61 +74,87 @@ app.get('/api/services', (req, res) => {
   res.json(services);
 });
 
-// SPA fallback - возвращает простую страницу
+// SPA fallback
+let hasStaticFiles = false;
+try {
+  const fs = await import('fs/promises');
+  await fs.access(path.join(distPath, 'index.html'));
+  hasStaticFiles = true;
+  console.log('✅ index.html found');
+} catch (error) {
+  console.log('ℹ️ index.html not found, using fallback page');
+}
+
 app.get('*', (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dunets - Студия веб-разработки в Мозыре</title>
-        <style>
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                text-align: center;
-                padding: 50px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                min-height: 100vh;
-                margin: 0;
-            }
-            .container {
-                max-width: 600px;
-                margin: 0 auto;
-                background: rgba(255, 255, 255, 0.1);
-                padding: 40px;
-                border-radius: 20px;
-                backdrop-filter: blur(10px);
-            }
-            .loader {
-                border: 4px solid rgba(255, 255, 255, 0.3);
-                border-top: 4px solid white;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                animation: spin 2s linear infinite;
-                margin: 20px auto;
-            }
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            h1 { margin-bottom: 10px; font-size: 2.5em; }
-            p { margin: 10px 0; opacity: 0.8; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Dunets</h1>
-            <div class="loader"></div>
-            <p>Студия веб-разработки в Мозыре</p>
-            <p>Приложение загружается...</p>
-            <p>Если страница не загружается, попробуйте обновить.</p>
-        </div>
-    </body>
-    </html>
-  `);
+  // Пропускаем API запросы
+  if (req.path.startsWith('/api/') || req.path === '/health') {
+    return;
+  }
+
+  if (hasStaticFiles) {
+    // Если есть статические файлы, возвращаем index.html
+    try {
+      res.sendFile(path.join(distPath, 'index.html'));
+    } catch (error) {
+      console.error('Error serving index.html:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  } else {
+    // Если нет статических файлов, показываем fallback страницу
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="ru">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Dunets - Студия веб-разработки в Мозыре</title>
+          <style>
+              body {
+                  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                  text-align: center;
+                  padding: 50px;
+                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                  color: white;
+                  min-height: 100vh;
+                  margin: 0;
+              }
+              .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  background: rgba(255, 255, 255, 0.1);
+                  padding: 40px;
+                  border-radius: 20px;
+                  backdrop-filter: blur(10px);
+              }
+              .loader {
+                  border: 4px solid rgba(255, 255, 255, 0.3);
+                  border-top: 4px solid white;
+                  border-radius: 50%;
+                  width: 40px;
+                  height: 40px;
+                  animation: spin 2s linear infinite;
+                  margin: 20px auto;
+              }
+              @keyframes spin {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+              }
+              h1 { margin-bottom: 10px; font-size: 2.5em; }
+              p { margin: 10px 0; opacity: 0.8; }
+          </style>
+      </head>
+      <body>
+          <div class="container">
+              <h1>Dunets</h1>
+              <div class="loader"></div>
+              <p>Студия веб-разработки в Мозыре</p>
+              <p>Приложение загружается...</p>
+              <p>Если страница не загружается, попробуйте обновить.</p>
+          </div>
+      </body>
+      </html>
+    `);
+  }
 });
 
 // Запуск сервера
